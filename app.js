@@ -33,6 +33,7 @@
 
     /** クラス */
     function Button(element, hp) {
+      console.log('生成されたよ, hp:' + hp);
       this._element = element;
       this._hp = hp
       /** ここもかっこわるい。。 */
@@ -89,23 +90,23 @@
   }();
 
 
-  /** buttonに紐付けするmodelの定義 */
-
-  /** buttonにたいしてclickイベントを実装 */
-  // classはあくまでcss適用のためのものなので、
-  // data属性にbuttonであることを定義
-  // ここでobjectの初期化出来ないかな？ hpをひょうじしたりとか
   $(document)
+    /*
+     * buttonの初期化定義
+     */
     .ready(function(e) {
       /** buttonオブジェクトの初期化処理 */
       Button._jQueryInterface.call($(Selecter.DATA_TOGGLE), 'init');
     })
+    /*
+     * buttonに対するイベント定義
+     */
     .on(Event.CLICK, Selecter.DATA_TOGGLE, function() {
       /** 呼ぶだけ */
       Button._jQueryInterface.call($(this), 'attacked');
-//    })
-//    .on(Event.CLICK, Selecter.DATA_TOGGLE, function() {
-//
-//
+      //    })
+      //    .on(Event.CLICK, Selecter.DATA_TOGGLE, function() {
+      //
+      //
     });
 })();
