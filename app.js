@@ -27,7 +27,7 @@
   const Button = function() {
     /*
      * これ, closureだ。関数を返す関数だから
-     * なんでclosureを使っているんだろう。。。
+     * なんでclosureを使っているんだろう。。。状態保持のため？
      */
     var _hp = 0;
 
@@ -35,6 +35,8 @@
     function Button(element, hp) {
       this._element = element;
       this._hp = hp
+      /** ここもかっこわるい。。 */
+      $(this._element).append('<p>' + this._hp + '</p>')
     };
 
     /** 何度もButton.prototypeが出てくるのを防ぐ */
@@ -42,6 +44,18 @@
 
     _proto.status = function() {
       console.log('私のhpは' + this._hp + 'です');
+    }
+
+    _proto.attacked = function() {
+      this._hp = this._hp - 1;
+      /** modelの変更をviewに伝える処理を呼び出す */
+      this._updateHp();
+    }
+
+    /** private */
+    _proto._updateHp = function() {
+      /** ここかっこ悪い */
+      $(this._element).find('p').text(this._hp);
     }
 
     /** static: this(jquery object)を指定して実行 */
@@ -55,15 +69,22 @@
         let model = $(this).data(DATA_KEY);
         let hp    = $(this).data(DATA_KEY_HP);
 
-        /** modelがなければmodelの生成 */
+        /** modelを持っていなければ初期化する */
         if (!model) {
           model = new Button(this, hp);
           $(this).data(DATA_KEY, model);
         }
-        model[apiType]();
+
+        /** 初期化処理以外のときはmodelのmethodを呼び出す */
+        /** 本当は初期化処理をバッサリわけたいんだよなぁ。。。 */
+        if (apiType !== 'init') {
+          model[apiType]();
+        }
       });
     }
 
+    /** 関数を返している。
+     * newされることにより、コンストラクタとして働き、インスタンスを返す */
     return Button;
   }();
 
@@ -76,14 +97,12 @@
   // ここでobjectの初期化出来ないかな？ hpをひょうじしたりとか
   $(document)
     .ready(function(e) {
-      /** 文書が読み込まれた時の初期化処理: どうしたらはしるのかな */
-      console.log(e);
+      /** buttonオブジェクトの初期化処理 */
+      Button._jQueryInterface.call($(Selecter.DATA_TOGGLE), 'init');
     })
     .on(Event.CLICK, Selecter.DATA_TOGGLE, function() {
       /** 呼ぶだけ */
-      // eventがあったjqueryオブジェクトを渡す */
-      /** イベントとinterfaceを紐つけている */
-      Button._jQueryInterface.call($(this), 'status');
+      Button._jQueryInterface.call($(this), 'attacked');
 //    })
 //    .on(Event.CLICK, Selecter.DATA_TOGGLE, function() {
 //
