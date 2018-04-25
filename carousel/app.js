@@ -24,18 +24,21 @@
         "bbb",
         "ccc"
       ];
-      this._currentIndex = 1;
+      this._currentIndex = 0;
     }
 
     Carousel.prototype.next = function() {
-      console.log('next');
       this._currentIndex = (this._currentIndex + 1) % this._datas.length;
       $(this._element).text(this._datas[this._currentIndex]);
     }
 
     Carousel.prototype.prev = function() {
       console.log('prev');
-      this._currentIndex = (this._currentIndex - 1) % this._datas.length;
+      if (this._currentIndex === 0) {
+        this._currentIndex = this._datas.length - 1;
+      } else {
+        this._currentIndex = (this._currentIndex - 1) % this._datas.length;
+      }
       $(this._element).text(this._datas[this._currentIndex]);
     }
 
@@ -58,8 +61,9 @@
     var target = $(this).data('target');
 
 
-    /** カルーセルオブジェクトの初期化 */
+    /** カルーセルオブジェクトを取得 */
     var model = $(target).data(DATA_KEY);
+    l(model);
 
     if (!model) {
       /** カルーセルオブジェクトの初期化 */
